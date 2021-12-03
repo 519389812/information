@@ -10,7 +10,7 @@ import re
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        ('个人信息', {'fields': ('first_name', 'last_name', 'full_name', 'email', 'email_verify')}),
+        ('个人信息', {'fields': ('first_name', 'last_name', 'full_name')}),
         ('权限', {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
