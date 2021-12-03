@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        {% include "head.html" %}
+        <title>信息报送主页</title>
+    </head>
+    <body class="d-flex flex-column">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            {% include "navigation.html" %}
+            <!-- Header-->
+            <header class="py-5">
+                <div class="container px-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 col-xxl-6">
+                            <div class="text-center my-5">
+                                <h1 class="fw-bolder mb-3">信息报送</h1>
+                                <p class="lead fw-normal text-muted mb-4">仅用于信息收集与模板生成<br/>请于每日工作结束后清除当天数据</p>
+                                <a class="btn btn-primary btn-lg" href="{% url 'export_pax' %}">开始生成</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </main>
+        <!-- Footer-->
+        {% include "footer.html" %}
+        {% include "script.html" %}
+    </body>
+</html>

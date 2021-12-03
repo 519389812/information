@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        {% include "head.html" %}
+        <title>报送模板生成</title>
+    </head>
+    <body class="d-flex flex-column h-100">
+        <main class="flex-shrink-0">
+            <!-- Navigation-->
+            {% include "navigation.html" %}
+            <!-- Page Content-->
+            <section class="py-5">
+                <div class="container px-5 my-5">
+                    <div class="text-center mb-5">
+                        <h1 class="fw-bolder">信息报送</h1>
+                        <p class="lead fw-normal text-muted mb-0">模板生成</p>
+                    </div>
+                    <div class="row gx-5">
+                        <div class="col-xl-4">
+                            <div class="card border-0 bg-light mt-xl-5">
+                                <div class="card-body p-4 py-lg-5">
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <div class="text-center">
+                                            <div class="h6 fw-bolder">请输入要生成模板的信息</div>
+                                            <br />
+                                            <div class="control-group form-group">
+                                                <div class="controls">
+                                                    <label>航班号</label>
+                                                    <input type="text" class="form-control" id="flight" name="flight"/>
+                                                    <div class="invalid-feedback" id="flight-invalid-feedback"></div>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="control-group form-group">
+                                                <div class="controls">
+                                                    <label>航班日期</label>
+                                                    <input type="date" class="form-control" id="flightDate" name="flightDate"/>
+                                                    <div class="invalid-feedback" id="flightDate-invalid-feedback"></div>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            {% csrf_token %}
+                                            <button class="btn btn-primary btn-md" id="generate_btn">生成数据</button>
+                                            <br /><br />
+                                            <button class="btn btn-primary btn-md" id="copy_btn" data-clipboard-target="#message">复制数据</button>
+                                            <div id="success_copy_result" style="display: none;">复制成功</div>
+                                            <div id="error_copy_result" style="display: none;">复制失败</div>
+                                            <br /><br /><br />
+                                            <p class="text-muted mb-4">
+                                                管理数据请进入此页面
+                                                <br />
+                                                <a href="/admin">管理后台</a>
+                                                <br />
+                                                请务必于每日工作结束后清除当天数据
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8">
+                            <!-- Message-->
+                            <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+                                <div class="form-floating mb-3">
+                                    <textarea class="form-control" id="message" name="message" placeholder="信息模板" style="height: 1000px"></textarea>
+                                    <label for="message">信息模板（自动生成，可以直接编辑调整数据）</label>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        {% include "script.html" %}
+        <script>
+            var btn=document.getElementById('copy_btn');
+            var clipboard=new ClipboardJS(btn);
+            clipboard.on('success', function(e){
+                $('#success_copy_result').slideDown().delay(1500).slideUp(300);
+            });
+            clipboard.on('error', function(e){
+                $('#error_copy_result').slideDown().delay(1500).slideUp(300);
+            });
+
+            $('#flight').blur(function(){
+                var flight = $('#flight').val();
+                $.get('/check_flight_validate/',{'flight':flight}, function(ret){
+                    if (ret != '') {
+                        if ($('#flight').hasClass('is-valid') == true) {
+                            $('#flight').removeClass('is-valid');
+                        };
+                        $('#flight').addClass('is-invalid');
+                    } else {
+                        if ($('#flight').hasClass('is-invalid') == true) {
+                            $('#flight').removeClass('is-invalid');
+                        };
+                        $('#flight').addClass('is-valid');
+                    };
+                    $('#flight-invalid-feedback').html(ret);
+                });
+            });
+
+            $('#flightDate').blur(function(){
+                var flightDate = $('#flightDate').val();
+                $.get('/check_flight_date_validate/',{'flightDate':flightDate}, function(ret){
+                    if (ret != '') {
+                        if ($('#flightDate').hasClass('is-valid') == true) {
+                            $('#flightDate').removeClass('is-valid');
+                        };
+                        $('#flightDate').addClass('is-invalid');
+                    } else {
+                        if ($('#flightDate').hasClass('is-invalid') == true) {
+                            $('#flightDate').removeClass('is-invalid');
+                        };
+                        $('#flightDate').addClass('is-valid');
+                    };
+                    $('#flightDate-invalid-feedback').html(ret);
+                });
+            });
+
+            $('#generate_btn').click(function(){
+                var flight_validate = $('#flight-invalid-feedback').text();
+                var flightDate_validate = $('#flightDate-invalid-feedback').text();
+                var flight = $('#flight').val();
+                var flightDate = $('#flightDate').val();
+                if (flight == "" || flightDate == "") {
+                    alert("请先完善填写内容 Please fill out the form as required");
+                    return;
+                };
+                if (flight_validate != "" || flightDate_validate != ""){
+                    alert("请先完善填写内容 Please fill out the form as required");
+                    return;
+                } else {
+                    $("#message").val('模板生成中...');
+                    $("#generate_btn").html('生成中');
+                    $("#generate_btn").attr("disabled", "true");
+                    $.ajax({
+                        type: "POST",
+                        url: "/export_pax/",
+                        async : false,
+                        timeout: 5000,
+                        data: {
+                            'flight':flight,
+                            'flightDate':flightDate,
+                            'csrfmiddlewaretoken':$("[name='csrfmiddlewaretoken']").val()
+                        },
+                        dataType: "text",
+                        success: function(data){
+                            if (data.startsWith('<!') == true) {
+                                $("#message").val('请先登录');
+                            } else {
+                                $("#message").val(data);
+                            }
+                            $("#generate_btn").removeAttr("disabled");
+                            $("#generate_btn").html('生成数据');
+                        },
+                        complete : function(XMLHttpRequest,status) { //请求完成后最终执行参数
+                            if(status == 'timeout') { //超时,status还有success,error等值的情况
+                                $("#message").val('模板生成超时');
+                                $("#generate_btn").html('生成数据');
+                                $("#generate_btn").removeAttr("disabled");
+                                alert('2');
+                            } else if(status == 'error') {
+                                $("#message").val('模板生成出错');
+                                $("#generate_btn").html('生成数据');
+                                $("#generate_btn").removeAttr("disabled");
+                                alert('3');
+                            } else if(status == 'success') {
+                                return;
+                            }
+                        },
+                    });
+                };
+            });
+        </script>
+    </body>
+</html>
