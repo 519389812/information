@@ -15,11 +15,7 @@
                 </li>
                 {% if user.is_authenticated == True %}
                     <li class="nav-item dropdown">
-                        {% if request.user.full_name == '' %}
-                            <a class="nav-link dropdown-toggle" id="user" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">用户</a>
-                        {% else %}
-                            <a class="nav-link dropdown-toggle" id="user" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ request.user.full_name }}</a>
-                        {% endif %}
+                        <a class="nav-link dropdown-toggle" id="user" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ user.username }}</a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user">
                             <li><a class="dropdown-item" href="/admin">后台管理</a></li>
                             <li><a class="dropdown-item" href="{% url 'logout' %}">登出</a></li>
