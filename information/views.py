@@ -201,8 +201,10 @@ def check_id_type_validate(request):
 
 def check_id_number_validate(request):
     if request.method == 'GET':
+        id_type = request.GET.get('idType')
         id_number = request.GET.get('idNumber')
     else:
+        id_type = request.POST.get('idType')
         id_number = request.POST.get('idNumber')
     if id_number == '':
         return HttpResponse('证件号不能为空 An id number city is required')

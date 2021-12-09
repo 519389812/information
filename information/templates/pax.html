@@ -71,24 +71,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- seat and baggage input-->
-                                <div class="row g-2">
-                                    <div class="col-md">
-<!--                                        style="position: relative; top: 50%; transform:translateY(-50%);"-->
-                                        <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="seat" name="seat" placeholder="请输入座位号 Enter your seat number eg.30A">
-                                            <label for="seat" style="font-size: 14px">座位号 Seat number&nbsp;&nbsp;eg.30A</label>
-                                            <div class="invalid-feedback" id="seat-invalid-feedback"></div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md">
-                                        <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" style="height: 100px" id="baggage" name="baggage" placeholder="请输入托运行李件数 Enter number of checked baggage">
-                                            <label for="baggage" style="font-size: 14px">托运行李件数<br>Number of checked baggage</label>
-                                            <div class="invalid-feedback" id="baggage-invalid-feedback"></div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <!-- id input-->
                                 <div class="row g-2">
                                     <div class="col-md">
@@ -186,6 +168,24 @@
                                     <textarea class="form-control" style="height: 100px" id="address" name="address" placeholder="目的地住址 Enter your destination address" rows="3"></textarea>
                                     <label for="bodyTemperature" style="font-size: 14px">目的地住址 Destination address</label>
                                     <div class="invalid-feedback" id="address-invalid-feedback"></div>
+                                </div>
+                                <!-- seat and baggage input-->
+                                <div class="row g-2">
+                                    <div class="col-md">
+<!--                                        style="position: relative; top: 50%; transform:translateY(-50%);"-->
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="seat" name="seat" placeholder="请输入座位号 Enter your seat number eg.30A">
+                                            <label for="seat" style="font-size: 14px">座位号 Seat number&nbsp;&nbsp;eg.30A</label>
+                                            <div class="invalid-feedback" id="seat-invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <div class="form-floating mb-3">
+                                            <input type="number" class="form-control" style="height: 100px" id="baggage" name="baggage" placeholder="请输入托运行李件数 Enter number of checked baggage">
+                                            <label for="baggage" style="font-size: 14px">托运行李件数<br>Number of checked baggage</label>
+                                            <div class="invalid-feedback" id="baggage-invalid-feedback"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- staff input-->
                                 <div class="form-floating mb-3">
@@ -354,8 +354,9 @@ $(document).ready(function(){
     });
 
     $('#idNumber').blur(function(){
+        var idType = $('#idType').val();
         var idNumber = $('#idNumber').val();
-        $.get('/check_id_number_validate/',{'idNumber':idNumber}, function(ret){
+        $.get('/check_id_number_validate/',{'idNumber':idNumber, 'idType':idType}, function(ret){
             if (ret != '') {
                 if ($('#idNumber').hasClass('is-valid') == true) {
                     $('#idNumber').removeClass('is-valid');
@@ -611,6 +612,39 @@ $(document).ready(function(){
                 return
             };
         });
+    });
+
+    $.fn.setNow = function (onlyBlank) {
+        var now = new Date($.now())
+        , year
+        , month
+        , date
+        , hours
+        , minutes
+        , seconds
+        , formattedDateTime
+        ;
+
+        year = now.getFullYear();
+        month = (now.getMonth()+1).toString().length === 1 ? '0' + (now.getMonth() + 1).toString() : now.getMonth() + 1;
+        date = now.getDate().toString().length === 1 ? '0' + now.getDate().toString() : now.getDate();
+        hours = now.getHours().toString().length === 1 ? '0' + now.getHours().toString() : now.getHours();
+        minutes = now.getMinutes().toString().length === 1 ? '0' + now.getMinutes().toString() : now.getMinutes();
+        seconds = now.getSeconds().toString().length === 1 ? '0' + now.getSeconds().toString() : now.getSeconds();
+
+        formattedDateTime = year + '-' + month + '-' + date;
+
+        if ( onlyBlank === true && $(this).val() ) {
+            return this;
+        }
+
+        $(this).val(formattedDateTime);
+        return this;
+    }
+
+    $(function () {
+        // Handler for .ready() called.
+        $("#flightDate").setNow();
     });
 });
 </script>
