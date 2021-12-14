@@ -37,16 +37,19 @@ def save_pax(request):
         # flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
         # verifier = Verifier.objects.filter(code=code)
         response = redirect('collect_pax')
-        cookie_dict = {n: json.dumps(c)
-                       for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
-                                    'departure': departure, 'arrival': arrival, 'id_type': id_type,
-                                    'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
-                                    'inbound_country': inbound_country, 'inbound_flight': inbound_flight,
-                                    'inbound_date': inbound_date, 'quarantine_end': quarantine_end,
-                                    'body_temperature': body_temperature, 'healthy_code': healthy_code,
-                                    'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
-        for n, c in cookie_dict.items():
-            response.set_cookie(n, c, 3600)
+        try:
+            cookie_dict = {n: json.dumps(c)
+                           for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
+                                        'departure': departure, 'arrival': arrival, 'id_type': id_type,
+                                        'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
+                                        'inbound_country': inbound_country, 'inbound_flight': inbound_flight,
+                                        'inbound_date': inbound_date, 'quarantine_end': quarantine_end,
+                                        'body_temperature': body_temperature, 'healthy_code': healthy_code,
+                                        'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
+            for n, c in cookie_dict.items():
+                response.set_cookie(n, c, 3600)
+        except:
+            pass
         return response
 
 
@@ -108,7 +111,6 @@ def collect_pax(request):
                                  healthy_code=healthy_code, address=address, verifier=verifier[0])
         response = render(request, 'done.html', {'msg_cn': '提交成功，感谢', 'msg_en': 'Submission successful, thank you'})
         for n in request.COOKIES.keys():
-            print(n)
             response.delete_cookie(n)
         return response
         # except:
@@ -262,7 +264,7 @@ def check_id_number_validate(request):
     if id_number == '':
         return HttpResponse('证件号不能为空 An id number city is required')
     if id_type == '身份证':
-        if len(id_number) != 15 or len(id_number) != 18:
+        if len(id_number) != 15 and len(id_number) != 18:
             return HttpResponse('证件号格式不正确 Id number is not valid')
         if not re.search(r'(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)', id_number):
             return HttpResponse('证件号格式不正确 Id number is not valid')
