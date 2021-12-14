@@ -160,12 +160,10 @@
                                 $("#message").val('模板生成超时');
                                 $("#generate_btn").html('生成数据');
                                 $("#generate_btn").removeAttr("disabled");
-                                alert('2');
                             } else if(status == 'error') {
                                 $("#message").val('模板生成出错');
                                 $("#generate_btn").html('生成数据');
                                 $("#generate_btn").removeAttr("disabled");
-                                alert('3');
                             } else if(status == 'success') {
                                 return;
                             }

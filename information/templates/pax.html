@@ -3,7 +3,7 @@
 <head>
     {% load static %}
     {% include "head.html" %}
-    <title>信息报送</title>
+    <title>行程登记</title>
 </head>
 
 <body class="d-flex flex-column">
@@ -33,7 +33,7 @@
                                 {% csrf_token %}
                                 <!-- Name input-->
                                 <div class="form-floating mb-3">
-                                    <input class="form-control" id="fullname" name="fullname" type="text" placeholder="请输入姓名 Enter your name" required/>
+                                    <input class="form-control" id="fullname" name="fullname" type="text" placeholder="请输入姓名 Enter your name" value="{{ request.COOKIES.fullname }}"/>
                                     <label for="fullname" style="font-size: 14px">全名 Full name</label>
                                     <div class="invalid-feedback" id="fullname-invalid-feedback"></div>
                                 </div>
@@ -41,14 +41,14 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="flight" name="flight" type="text" placeholder="请输入航班号 Enter your flight number" required/>
+                                            <input class="form-control" id="flight" name="flight" type="text" placeholder="请输入航班号 Enter your flight number" value="{{ request.COOKIES.flight }}"/>
                                             <label for="flight" style="font-size: 14px">航班号 Flight number</label>
                                             <div class="invalid-feedback" id="flight-invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="date" class="form-control" id="flightDate" name="flightDate" placeholder="起飞日期 Enter departure date" required/>
+                                            <input type="date" class="form-control" id="flightDate" name="flightDate" placeholder="起飞日期 Enter departure date" value="{{ request.COOKIES.flight_date }}"/>
                                             <label for="flightDate" style="font-size: 14px">起飞日期 Departure date</label>
                                             <div class="invalid-feedback" id="flightDate-invalid-feedback"></div>
                                         </div>
@@ -58,14 +58,14 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="departure" name="departure" placeholder="请输入始发地 Enter departure city" value="广州 GuangZhou" required/>
+                                            <input type="text" class="form-control" id="departure" name="departure" placeholder="请输入始发地 Enter departure city" value="{{ request.COOKIES.departure }}"/>
                                             <label for="departure" style="font-size: 14px">始发地 Departure city</label>
                                             <div class="invalid-feedback" id="departure-invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="arrival" name="arrival" placeholder="请输入目的地 Enter arrival city" required/>
+                                            <input type="text" class="form-control" id="arrival" name="arrival" placeholder="请输入目的地 Enter arrival city" value="{{ request.COOKIES.arrival }}"/>
                                             <label for="arrival" style="font-size: 14px">目的地 Arrival city</label>
                                             <div class="invalid-feedback" id="arrival-invalid-feedback"></div>
                                         </div>
@@ -75,9 +75,9 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <select id="idType" name="idType" class="form-select" required>
-                                                <option selected value="身份证" style="font-size: 14px">身份证 Id card</option>
-                                                <option value="护照" style="font-size: 14px">护照 Passport</option>
+                                            <select id="idType" name="idType" class="form-select">
+                                                <option value="身份证" style="font-size: 14px" {% if request.COOKIES.id_type == '身份证' %}selected{% elif request.COOKIES.id_type == '' %}selected{% endif %}>身份证 Id card</option>
+                                                <option value="护照" style="font-size: 14px" {% if request.COOKIES.id_type == '护照' %}selected{% endif %}>护照 Passport</option>
                                             </select>
                                             <label for="idType" style="font-size: 14px">证件类型 Type of identity</label>
                                             <div class="invalid-feedback" id="idType-invalid-feedback"></div>
@@ -85,7 +85,7 @@
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="idNumber" name="idNumber" placeholder="证件号码 Number of identity" required/>
+                                            <input type="text" class="form-control" id="idNumber" name="idNumber" placeholder="证件号码 Number of identity" value="{{ request.COOKIES.id_number }}"/>
                                             <label for="idNumber" style="font-size: 14px">证件号码 Number of identity</label>
                                             <div class="invalid-feedback" id="idNumber-invalid-feedback"></div>
                                         </div>
@@ -95,14 +95,14 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" id="diallingCode" name="diallingCode" placeholder="电话区号 Enter a dialling code" required/>
+                                            <input type="number" class="form-control" id="diallingCode" name="diallingCode" placeholder="电话区号 Enter a dialling code" value="{{ request.COOKIES.dialling_code }}"/>
                                             <label for="diallingCode" style="font-size: 14px">电话区号 Dialling code</label>
                                             <div class="invalid-feedback" id="diallingCode-invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" id="telephone" name="telephone" placeholder="联系电话 Enter your Phone number" required/>
+                                            <input type="number" class="form-control" id="telephone" name="telephone" placeholder="联系电话 Enter your Phone number" value="{{ request.COOKIES.telephone }}"/>
                                             <label for="telephone" style="font-size: 14px">联系电话 Phone number</label>
                                             <div class="invalid-feedback" id="telephone-invalid-feedback"></div>
                                         </div>
@@ -112,14 +112,14 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inboundCountry" name="inboundCountry" placeholder="入境国家 Enter a inbound country" required/>
+                                            <input type="text" class="form-control" id="inboundCountry" name="inboundCountry" placeholder="入境国家 Enter a inbound country" value="{{ request.COOKIES.inbound_country }}"/>
                                             <label for="inboundCountry" style="font-size: 14px">入境国家 Inbound country</label>
                                             <div class="invalid-feedback" id="inboundCountry-invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="inboundFlight" name="inboundFlight" placeholder="入境航班 Enter your inbound flight number" required/>
+                                            <input type="text" class="form-control" id="inboundFlight" name="inboundFlight" placeholder="入境航班 Enter your inbound flight number" value="{{ request.COOKIES.inbound_flight }}"/>
                                             <label for="inboundFlight" style="font-size: 14px">入境航班 Inbound flight number</label>
                                             <div class="invalid-feedback" id="inboundFlight-invalid-feedback"></div>
                                         </div>
@@ -129,14 +129,14 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="date" class="form-control" id="inboundDate" name="inboundDate" placeholder="入境日期 Enter a inbound date" required/>
+                                            <input type="date" class="form-control" id="inboundDate" name="inboundDate" placeholder="入境日期 Enter a inbound date" value="{{ request.COOKIES.inbound_date }}"/>
                                             <label for="inboundDate" style="font-size: 14px">入境日期 Inbound date</label>
                                             <div class="invalid-feedback" id="inboundDate-invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="date" class="form-control" style="height: 100px" id="quarantineEnd" name="quarantineEnd" placeholder="解除隔离日期 Date of lifting quarantine" required/>
+                                            <input type="date" class="form-control" style="height: 100px" id="quarantineEnd" name="quarantineEnd" placeholder="解除隔离日期 Date of lifting quarantine" value="{{ request.COOKIES.quarantine_end }}"/>
                                             <label for="quarantineEnd" style="font-size: 14px">解除隔离日期<br>Date of lifting quarantine</label>
                                             <div class="invalid-feedback" id="quarantineEnd-invalid-feedback"></div>
                                         </div>
@@ -146,17 +146,17 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="number" step="0.01" class="form-control" id="bodyTemperature" name="bodyTemperature" placeholder="体温 Enter your body temperature" required/>
+                                            <input type="number" step="0.1" class="form-control" id="bodyTemperature" name="bodyTemperature" placeholder="体温 Enter your body temperature" value="{{ request.COOKIES.body_temperature }}"/>
                                             <label for="bodyTemperature" style="font-size: 14px">体温 Body temperature</label>
                                             <div class="invalid-feedback" id="bodyTemperature-invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <select id="healthyCode" name="healthyCode" class="form-select" required>
-                                                <option selected value="绿码" style="font-size: 14px">绿码 Green</option>
-                                                <option value="黄码" style="font-size: 14px">黄码 Yellow</option>
-                                                <option value="红码" style="font-size: 14px">红码 Red</option>
+                                            <select id="healthyCode" name="healthyCode" class="form-select">
+                                                <option value="绿码" style="font-size: 14px" {% if request.COOKIES.healthy_code == '绿码' %}selected{% elif request.COOKIES.healthy_code == '' %}selected{% endif %}>绿码 Green</option>
+                                                <option value="黄码" style="font-size: 14px" {% if request.COOKIES.healthy_code == '黄码' %}selected{% endif %}>黄码 Yellow</option>
+                                                <option value="红码" style="font-size: 14px" {% if request.COOKIES.healthy_code == '红码' %}selected{% endif %}>红码 Red</option>
                                             </select>
                                             <label for="healthyCode" style="font-size: 14px">健康码 Healthy code</label>
                                             <div class="invalid-feedback" id="healthyCode-invalid-feedback"></div>
@@ -165,23 +165,27 @@
                                 </div>
                                 <!-- address input-->
                                 <div class="form-floating mb-3">
-                                    <textarea class="form-control" style="height: 100px" id="address" name="address" placeholder="目的地住址 Enter your destination address" rows="3" required></textarea>
+                                    <textarea class="form-control" style="height: 100px" id="address" name="address" placeholder="目的地住址 Enter your destination address" rows="3">{{ request.COOKIES.address }}</textarea>
                                     <label for="bodyTemperature" style="font-size: 14px">目的地住址 Destination address</label>
                                     <div class="invalid-feedback" id="address-invalid-feedback"></div>
                                 </div>
+                                <br/>
+                                <p align="center" style="font-size: 12px">以下内容请移步至柜台由工作人员协助填写</p>
+                                <hr/>
+                                <br/>
                                 <!-- seat and baggage input-->
                                 <div class="row g-2">
                                     <div class="col-md">
 <!--                                        style="position: relative; top: 50%; transform:translateY(-50%);"-->
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="seat" name="seat" placeholder="请输入座位号 Enter your seat number eg.30A" required/>
+                                            <input type="text" class="form-control" id="seat" name="seat" placeholder="请输入座位号 Enter your seat number eg.30A" value="{{ request.COOKIES.seat }}"/>
                                             <label for="seat" style="font-size: 14px">座位号 Seat number&nbsp;&nbsp;eg.30A</label>
                                             <div class="invalid-feedback" id="seat-invalid-feedback"></div>
                                         </div>
                                     </div>
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" style="height: 100px" id="baggage" name="baggage" placeholder="请输入托运行李件数 Enter number of checked baggage" required/>
+                                            <input type="number" class="form-control" style="height: 100px" id="baggage" name="baggage" placeholder="请输入托运行李件数 Enter number of checked baggage" value="{{ request.COOKIES.baggage }}"/>
                                             <label for="baggage" style="font-size: 14px">托运行李件数<br>Number of checked baggage</label>
                                             <div class="invalid-feedback" id="baggage-invalid-feedback"></div>
                                         </div>
@@ -189,14 +193,18 @@
                                 </div>
                                 <!-- staff input-->
                                 <div class="form-floating mb-3">
-                                    <input type="number" class="form-control" id="code" name="code" placeholder="此项由员工填写 Only fill by employee" required/>
+                                    <input type="number" class="form-control" id="code" name="code" placeholder="此项由员工填写 Only fill by employee"/>
                                     <label for="code" style="font-size: 14px">确认码 Verification code</label>
                                     <div class="invalid-feedback" id="code-invalid-feedback"></div>
                                 </div>
                                 <!-- Submit Button-->
                                 <div>{{ msg_cn }}</div>
                                 <div>{{ msg_en }}</div>
-                                <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">提交</button></div>
+                                <div class="d-grid"><button class="btn btn-warning btn-lg" id="saveButton">暂存 Save</button></div>
+                                <div id="save_result" style="display: none;">保存成功 Successful</div>
+                                <div id="save_error" style="display: none;">保存出错 Error</div>
+                                <br/>
+                                <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">提交 Submit</button></div>
                             </form>
                         </div>
                     </div>
@@ -646,6 +654,78 @@ $(document).ready(function(){
         // Handler for .ready() called.
         $("#flightDate").setNow();
     });
+
+    $('#saveButton').click(function(){
+        var fullname = $('#fullname').val();
+        var flight = $('#flight').val();
+        var flightDate = $('#flightDate').val();
+        var departure = $('#departure').val();
+        var arrival = $('#arrival').val();
+        var seat = $('#seat').val();
+        var baggage = $('#baggage').val();
+        var idType = $('#idType').val();
+        var idNumber = $('#idNumber').val();
+        var diallingCode = $('#diallingCode').val();
+        var telephone = $('#telephone').val();
+        var inboundCountry = $('#inboundCountry').val();
+        var inboundFlight = $('#inboundFlight').val();
+        var inboundDate = $('#inboundDate').val();
+        var quarantineEnd = $('#quarantineEnd').val();
+        var bodyTemperature = $('#bodyTemperature').val();
+        var healthyCode = $('#healthyCode').val();
+        var address = $('#address').val();
+        $("#saveButton").html('保存中');
+        $("#saveButton").attr("disabled", "true");
+        $.ajax({
+            type: "POST",
+            url: "/save_pax/",
+            async : false,
+            timeout: 5000,
+            data: {
+                'flight': flight,
+                'flightDate': flightDate,
+                'fullname': fullname,
+                'flight': flight,
+                'flightDate': flightDate,
+                'departure': departure,
+                'arrival': arrival,
+                'seat': seat,
+                'baggage': baggage,
+                'idType': idType,
+                'idNumber': idNumber,
+                'diallingCode': diallingCode,
+                'telephone': telephone,
+                'inboundCountry': inboundCountry,
+                'inboundFlight': inboundFlight,
+                'inboundDate': inboundDate,
+                'quarantineEnd': quarantineEnd,
+                'bodyTemperature': bodyTemperature,
+                'healthyCode': healthyCode,
+                'address': address,
+                'csrfmiddlewaretoken':$("[name='csrfmiddlewaretoken']").val()
+            },
+            dataType: "text",
+            success: function(data){
+                $("#saveButton").removeAttr("disabled");
+                $('#save_result').slideDown().delay(1500).slideUp(300);
+                $("#saveButton").html('暂存 Save');
+            },
+            complete : function(XMLHttpRequest,status) { //请求完成后最终执行参数
+                if(status == 'timeout') { //超时,status还有success,error等值的情况
+                    $("#saveButton").removeAttr("disabled");
+                    $('#save_error').slideDown().delay(1500).slideUp(300);
+                    $("#saveButton").html('暂存 Save');
+                } else if(status == 'error') {
+                    $("#saveButton").removeAttr("disabled");
+                    $('#save_error').slideDown().delay(1500).slideUp(300);
+                    $("#saveButton").html('暂存 Save');
+                } else if(status == 'success') {
+                    return;
+                }
+            },
+        });
+    });
+
 });
 </script>
 </body>

@@ -28,6 +28,7 @@ urlpatterns = [
     path('logout/', u_view.logout, name="logout"),
     path('pax/', i_view.collect_pax, name='collect_pax'),
     path('export_pax/', i_view.export_pax, name='export_pax'),
+    path('save_pax/', i_view.save_pax, name='save'),
 
     # passenger form validate
     path('check_fullname_validate/', i_view.check_fullname_validate, name="check_fullname_validate"),

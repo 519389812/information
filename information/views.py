@@ -13,17 +13,8 @@ def show_done(request):
     return render(request, 'done.html', {'msg_cn': '验证码错误', 'msg_en': 'Incorrect verification code'})
 
 
-def collect_pax(request):
+def save_pax(request):
     if request.method == 'POST':
-        if not check_valudate(request, check_fullname_validate, check_flight_validate, check_flight_date_validate,
-                              check_departure_validate, check_arrival_validate, check_seat_validate,
-                              check_baggage_validate, check_id_type_validate, check_id_number_validate,
-                              check_dialling_code_validate, check_telephone_validate, check_inbound_country_validate,
-                              check_inbound_flight_validate, check_inbound_date_validate, check_quarantine_end_validate,
-                              check_body_temperature_validate, check_healthy_code_validate, check_address_validate,
-                              check_code_validate):
-            return render(request, 'pax.html', {'msg_cn': '请按要求完善信息',
-                                                'msg_en': 'Please complete the form as required'})
         fullname = request.POST.get('fullname').upper()
         flight = request.POST.get('flight').upper()
         flight_date = request.POST.get('flightDate')
@@ -42,6 +33,63 @@ def collect_pax(request):
         body_temperature = request.POST.get('bodyTemperature')
         healthy_code = request.POST.get('healthyCode')
         address = request.POST.get('address').upper()
+        # code = request.POST.get('code')
+        # flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
+        # verifier = Verifier.objects.filter(code=code)
+        response = redirect('collect_pax')
+        cookie_dict = {n: json.dumps(c)
+                       for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
+                                    'departure': departure, 'arrival': arrival, 'id_type': id_type,
+                                    'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
+                                    'inbound_country': inbound_country, 'inbound_flight': inbound_flight,
+                                    'inbound_date': inbound_date, 'quarantine_end': quarantine_end,
+                                    'body_temperature': body_temperature, 'healthy_code': healthy_code,
+                                    'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
+        for n, c in cookie_dict.items():
+            response.set_cookie(n, c, 3600)
+        return response
+
+
+def collect_pax(request):
+    if request.method == 'POST':
+        fullname = request.POST.get('fullname').upper()
+        flight = request.POST.get('flight').upper()
+        flight_date = request.POST.get('flightDate')
+        departure = request.POST.get('departure').upper()
+        arrival = request.POST.get('arrival').upper()
+        seat = request.POST.get('seat').upper()
+        baggage = request.POST.get('baggage').upper()
+        id_type = request.POST.get('idType')
+        id_number = request.POST.get('idNumber')
+        dialling_code = request.POST.get('diallingCode')
+        telephone = request.POST.get('telephone')
+        inbound_country = request.POST.get('inboundCountry').upper()
+        inbound_flight = request.POST.get('inboundFlight').upper()
+        inbound_date = request.POST.get('inboundDate')
+        quarantine_end = request.POST.get('quarantineEnd')
+        body_temperature = request.POST.get('bodyTemperature')
+        healthy_code = request.POST.get('healthyCode')
+        address = request.POST.get('address').upper()
+        response = redirect('collect_pax')
+        if not check_valudate(request, check_fullname_validate, check_flight_validate, check_flight_date_validate,
+                              check_departure_validate, check_arrival_validate, check_seat_validate,
+                              check_baggage_validate, check_id_type_validate, check_id_number_validate,
+                              check_dialling_code_validate, check_telephone_validate, check_inbound_country_validate,
+                              check_inbound_flight_validate, check_inbound_date_validate, check_quarantine_end_validate,
+                              check_body_temperature_validate, check_healthy_code_validate, check_address_validate,
+                              check_code_validate):
+            cookie_dict = {n: c
+                           for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
+                                        'departure': departure, 'arrival': arrival, 'id_type': id_type,
+                                        'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
+                                        'inbound_country': inbound_country, 'inbound_flight': inbound_flight,
+                                        'inbound_date': inbound_date, 'quarantine_end': quarantine_end,
+                                        'body_temperature': body_temperature, 'healthy_code': healthy_code,
+                                        'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
+            for n, c in cookie_dict.items():
+                response.set_cookie(n, c, 3600)
+            return render(request, 'pax.html', {'msg_cn': '请按要求完善信息',
+                                                'msg_en': 'Please complete the form as required'})
         code = request.POST.get('code')
         flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
         verifier = Verifier.objects.filter(code=code)
@@ -58,8 +106,11 @@ def collect_pax(request):
                                  inbound_flight=inbound_flight, inbound_date=inbound_date,
                                  quarantine_end=quarantine_end, body_temperature=body_temperature,
                                  healthy_code=healthy_code, address=address, verifier=verifier[0])
-        return render(request, 'done.html', {'msg_cn': '提交成功，感谢',
-                                             'msg_en': 'Submission successful, thank you'})
+        response = render(request, 'done.html', {'msg_cn': '提交成功，感谢', 'msg_en': 'Submission successful, thank you'})
+        for n in request.COOKIES.keys():
+            print(n)
+            response.delete_cookie(n)
+        return response
         # except:
         #     return render(request, 'done.html', {'msg_cn': '提交失败，请联系工作人员',
         #                                          'msg_en': 'Submission failed, please contact staff'})
@@ -206,12 +257,20 @@ def check_id_number_validate(request):
     else:
         id_type = request.POST.get('idType')
         id_number = request.POST.get('idNumber')
+    if id_type == '':
+        return HttpResponse('请选择证件类别 An id type is required')
     if id_number == '':
         return HttpResponse('证件号不能为空 An id number city is required')
-    if len(id_number) < 5 or len(id_number) > 20:
-        return HttpResponse('证件号格式不正确 Id number is not valid')
-    if not re.search(r'^\w{5,20}$', id_number):
-        return HttpResponse('证件号格式不正确 Id number is not valid')
+    if id_type == '身份证':
+        if len(id_number) != 15 or len(id_number) != 18:
+            return HttpResponse('证件号格式不正确 Id number is not valid')
+        if not re.search(r'(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)', id_number):
+            return HttpResponse('证件号格式不正确 Id number is not valid')
+    if id_type == '护照':
+        if len(id_number) < 5 or len(id_number) > 12:
+            return HttpResponse('证件号格式不正确 Id number is not valid')
+        if not re.search(r'^\w{5,12}$', id_number):
+            return HttpResponse('证件号格式不正确 Id number is not valid')
     return HttpResponse('')
 
 

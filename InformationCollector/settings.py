@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-c(lu&+9kz*39g@^-(zy$()rn(__^7+1fj#q4py_(%gm^f1x3pa
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-online = True
+online = False
 # SECURITY WARNING: don't run with debug turned on in production!
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
