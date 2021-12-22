@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import path
 from InformationCollector import views as m_view
 from information import views as i_view
+from quickcheck import views as q_view
 from user import views as u_view
+from django.conf.urls.static import static
+from . import settings
 
 
 urlpatterns = [
@@ -54,4 +57,7 @@ urlpatterns = [
 
     # done
     path('done/', i_view.show_done, name='show_done'),
-]
+
+    # quickcheck
+    path('quickcheck/', q_view.quickcheck, name='quickcheck'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

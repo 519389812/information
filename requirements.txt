@@ -2,3 +2,5 @@ django==3.2.9
 django-simpleui==2021.11.5
 user-agents==2.2.0
 mysqlclient==2.1.0
+rsa==4.8
+pycryptodome==3.12.0

@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def quickcheck(request):
+    return render(request, 'quickcheck.html')
