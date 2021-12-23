@@ -4,3 +4,4 @@ user-agents==2.2.0
 mysqlclient==2.1.0
 rsa==4.8
 pycryptodome==3.12.0
+pillow==8.4.0

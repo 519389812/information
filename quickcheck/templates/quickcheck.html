@@ -15,7 +15,7 @@
         <div class="container px-5 my-5">
             <div class="text-center mb-5">
                 <h1 class="fw-bolder">国内部分城市防疫政策</h1>
-                <p class="lead fw-normal text-muted mb-0">最近更新时间：</p>
+                <p class="lead fw-normal text-muted mb-0">最近更新时间：{{ last_update_datetime }}</p>
             </div>
             <div class="row gx-5">
                 <div class="col-xl-4">
@@ -34,274 +34,40 @@
                 </div>
                 <div class="col-xl-8">
                     <!-- FAQ Accordion 1-->
-                    <h2 class="fw-bolder mb-3">省1</h2>
-                    <div class="accordion mb-5" id="accordionExample">
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingOne">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    <strong>城市1</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseOne" aria-labelledby="headingOne"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="list-unstyled mb-4">
-                                        <li class="mb-2">
-                                            <strong>低风险</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            48H核酸
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            健康码
-                                        </li>
-                                        <li class="mb-2">
-                                            <strong>中高风险，无核酸</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            集中隔离14天
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            居家隔离7天
-                                        </li>
-                                    </ul>
+                    {% for key, value in city_contents.items %}
+                        <h2 class="fw-bolder mb-3">{{ key }}</h2>
+                        <div class="accordion mb-5" id="accordionExample">
+                            {% for v in value %}
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header" id="heading{{ v.id }}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapse{{ v.id }}" aria-expanded="false" aria-controls="collapse{{ v.id }}">
+                                            <strong>{{ v.name }}</strong>&nbsp;&nbsp;&nbsp;<div>{{ v.summary }}</div>
+                                        </button>
+                                    </h3>
+                                    <div class="accordion-collapse collapse" id="collapse{{ v.id }}" aria-labelledby="heading{{ v.id }}"
+                                         data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <ul class="list-unstyled mb-4">
+                                                <li class="mb-2 text-muted"><i style="font-size:10px">更新时间：{{ v.update_datetime }}</i></li>
+                                                {% for k1, v1 in v.policy.items %}
+                                                    <li class="mb-2">
+                                                        <strong>{{ k1 }}</strong>
+                                                    </li>
+                                                    {% for v2 in v1 %}
+                                                        <li class="mb-2">
+                                                            <i class="bi bi-check text-primary"></i>
+                                                            {{ v2 }}
+                                                        </li>
+                                                    {% endfor %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endfor %}
                         </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    <strong>城市2</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseTwo" aria-labelledby="headingTwo"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                    <strong>城市3</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseThree" aria-labelledby="headingThree"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h2 class="fw-bolder mb-3">省2</h2>
-                    <div class="accordion mb-5" id="accordionExample">
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingOne">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    <strong>城市1</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseOne" aria-labelledby="headingOne"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="list-unstyled mb-4">
-                                        <li class="mb-2">
-                                            <strong>低风险</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            48H核酸
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            健康码
-                                        </li>
-                                        <li class="mb-2">
-                                            <strong>中高风险，无核酸</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            集中隔离14天
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            居家隔离7天
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    <strong>城市2</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseTwo" aria-labelledby="headingTwo"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                    <strong>城市3</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseThree" aria-labelledby="headingThree"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h2 class="fw-bolder mb-3">省3</h2>
-                    <div class="accordion mb-5" id="accordionExample">
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingOne">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    <strong>城市1</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseOne" aria-labelledby="headingOne"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="list-unstyled mb-4">
-                                        <li class="mb-2">
-                                            <strong>低风险</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            48H核酸
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            健康码
-                                        </li>
-                                        <li class="mb-2">
-                                            <strong>中高风险，无核酸</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            集中隔离14天
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            居家隔离7天
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    <strong>城市2</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseTwo" aria-labelledby="headingTwo"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                    <strong>城市3</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseThree" aria-labelledby="headingThree"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h2 class="fw-bolder mb-3">省4</h2>
-                    <div class="accordion mb-5" id="accordionExample">
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingOne">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                    <strong>城市1</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseOne" aria-labelledby="headingOne"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                    <ul class="list-unstyled mb-4">
-                                        <li class="mb-2">
-                                            <strong>低风险</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            48H核酸
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            健康码
-                                        </li>
-                                        <li class="mb-2">
-                                            <strong>中高风险，无核酸</strong>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            集中隔离14天
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="bi bi-check text-primary"></i>
-                                            居家隔离7天
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    <strong>城市2</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseTwo" aria-labelledby="headingTwo"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item">
-                            <h3 class="accordion-header" id="headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                    <strong>城市3</strong>&nbsp;&nbsp;&nbsp;<div>48H核酸，隔离14天</div>
-                                </button>
-                            </h3>
-                            <div class="accordion-collapse collapse" id="collapseThree" aria-labelledby="headingThree"
-                                 data-bs-parent="#accordionExample">
-                                <div class="accordion-body">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -349,13 +115,15 @@
             });
             pos = new Array();
             var regExp = new RegExp(key+'(?=(</strong)|(</h))', 'ig');//正则表达式匹配
-            $("body").html($("body").html().replace(regExp, "<span id='result" + index + "' class='result'>" + key + "</span>")); // 高亮操作
+            var p = $("body").html().search(regExp); // 查找
+            console.log(p);
             index = 0;
             $("#key").val(key);
             oldKey = key;
             $(".result").each(function () {
                 pos.push($(this).offset().top);
             });
+            console.log(pos);
             oldCount = $(".result").length;
         }
         $("html,body").scrollTop(pos[index]);//跳转到指定位置

@@ -60,4 +60,5 @@ urlpatterns = [
 
     # quickcheck
     path('quickcheck/', q_view.quickcheck, name='quickcheck'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

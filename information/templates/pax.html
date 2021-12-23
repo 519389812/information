@@ -58,7 +58,7 @@
                                 <div class="row g-2">
                                     <div class="col-md">
                                         <div class="form-floating mb-3">
-                                            <input type="text" class="form-control" id="departure" name="departure" placeholder="请输入始发地 Enter departure city"/>
+                                            <input type="text" class="form-control" id="departure" name="departure" placeholder="请输入始发地 Enter departure city" value="广州 GuangZhou"/>
                                             <label for="departure" style="font-size: 14px">始发地 Departure city</label>
                                             <div class="invalid-feedback" id="departure-invalid-feedback"></div>
                                         </div>
@@ -170,7 +170,11 @@
                                     <div class="invalid-feedback" id="address-invalid-feedback"></div>
                                 </div>
                                 <br/>
-                                <p align="center" style="font-size: 12px">以下内容请移步至柜台由工作人员协助填写<br/>Please move to the counter to fill in the following content with the assistance of the staff</p>
+                                <div class="d-grid"><button class="btn btn-warning btn-lg" id="saveButton">暂存 Save</button></div>
+                                <div id="save_result" style="display: none;">保存成功 Successful</div>
+                                <div id="save_error" style="display: none;">保存出错 Error</div>
+                                <br/>
+                                <p align="center" style="font-size: 12px">以下信息请移步柜台由员工填写<br/>Please move to the counter to fill in the following content with the assistance of the staff</p>
                                 <hr/>
                                 <br/>
                                 <!-- seat and baggage input-->
@@ -200,10 +204,6 @@
                                 <!-- Submit Button-->
                                 <div>{{ msg_cn }}</div>
                                 <div>{{ msg_en }}</div>
-                                <div class="d-grid"><button class="btn btn-warning btn-lg" id="saveButton">暂存 Save</button></div>
-                                <div id="save_result" style="display: none;">保存成功 Successful</div>
-                                <div id="save_error" style="display: none;">保存出错 Error</div>
-                                <br/>
                                 <div class="d-grid"><button class="btn btn-primary btn-lg" id="submitButton" type="submit">提交 Submit</button></div>
                             </form>
                         </div>
