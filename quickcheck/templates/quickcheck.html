@@ -25,6 +25,7 @@
                                 <div class="text-center">
                                     <div class="h6 fw-bolder"></div>
                                     <input id="key" type="text" class="form-control" placeholder="省份 城市"/>
+                                    <div id="search_result" style="display: none;color: red">无记录</div>
                                     <br/>
                                     <button class="btn btn-secondary" type="button" onclick="next()">搜索</button>
                                 </div>
@@ -35,14 +36,14 @@
                 <div class="col-xl-8">
                     <!-- FAQ Accordion 1-->
                     {% for key, value in city_contents.items %}
-                        <h2 class="fw-bolder mb-3">{{ key }}</h2>
+                        <h2 class="fw-bolder mb-3" id="province{{ value.0.id }}">{{ key }}</h2>
                         <div class="accordion mb-5" id="accordionExample">
                             {% for v in value %}
                                 <div class="accordion-item">
                                     <h3 class="accordion-header" id="heading{{ v.id }}">
                                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                                 data-bs-target="#collapse{{ v.id }}" aria-expanded="false" aria-controls="collapse{{ v.id }}">
-                                            <strong>{{ v.name }}</strong>&nbsp;&nbsp;&nbsp;<div>{{ v.summary }}</div>
+                                            <strong id="city{{ v.id }}">{{ v.name }}</strong>&nbsp;&nbsp;&nbsp;<div>{{ v.summary }}</div>
                                         </button>
                                     </h3>
                                     <div class="accordion-collapse collapse" id="collapse{{ v.id }}" aria-labelledby="heading{{ v.id }}"
@@ -78,55 +79,31 @@
 {% include "script.html" %}
 <script type="text/javascript">
     var oldKey = "";//查询框能搜索，定位，高亮目标
-    var index = -1;
-    var pos = new Array();//用于记录每个关键词的位置，以方便跳转
-    var oldCount = 0;//记录搜索到的所有关键词总数
-
-    function previous(){
-        index--;
-        index = index < 0 ? oldCount - 1 : index;
-        search();
-    }
+    var pos = -1;//用于记录每个关键词的位置，以方便跳转
 
     function next(){
-        index++;
-        //index = index == oldCount ? 0 : index;
-        if(index==oldCount){
-            index = 0 ;
-        }
-        search();
-    }
-
-    function search() {
-        $(".result").removeClass("res");//去除原本的res样式
         var key = $("#key").val(); //取key值
         if (!key) {
-            $(".result").each(function () {//恢复原始数据
-                $(this).replaceWith($(this).html());
-            });
             oldKey = "";
             return; //key为空则退出
         }
         if (oldKey != key) {
-            //重置
-            index = 0;
-            $(".result").each(function () {
-                $(this).replaceWith($(this).html());
-            });
-            pos = new Array();
-            var regExp = new RegExp(key+'(?=(</strong)|(</h))', 'ig');//正则表达式匹配
-            var p = $("body").html().search(regExp); // 查找
-            console.log(p);
-            index = 0;
             $("#key").val(key);
             oldKey = key;
-            $(".result").each(function () {
-                pos.push($(this).offset().top);
-            });
-            console.log(pos);
-            oldCount = $(".result").length;
+            var regExp = new RegExp('id="((province[0-9]+)|(city[0-9]+))".*'+key+'.*');//正则表达式匹配
+            var str = $("body").html().match(regExp);
+            if (str == null) {
+                pos = -1
+                $('#search_result').slideDown().delay(1500).slideUp(300);
+                return;
+            }
+            pos = $("#" + str[1]).offset().top;
         }
-        $("html,body").scrollTop(pos[index]);//跳转到指定位置
+        if (pos == -1) {
+            $('#search_result').slideDown().delay(1500).slideUp(300);
+            return;
+        }
+        $("html,body").scrollTop(pos);//跳转到指定位置
     }
 
     document.onkeydown = function(e) {  //使next button响应回车事件

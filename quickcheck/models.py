@@ -1,5 +1,7 @@
 from django.db import models
 from user.models import CustomUser
+from InformationCollector.safe import aes_encrypt, aes_decrypt
+from InformationCollector.settings import AES_KEY, AES_VI
 
 
 class Province(models.Model):
@@ -31,3 +33,25 @@ class City(models.Model):
 
     def __str__(self):
         return self.name
+
+    encrypt_items = ['summary', 'policy']
+
+    # def __getattribute__(self, attr):
+    #     try:
+    #         if attr in object.__getattribute__(self, 'encrypt_items'):
+    #             print('undecode:', (object.__getattribute__(self, attr)))
+    #             print('decode:', aes_decrypt(AES_KEY, object.__getattribute__(self, attr), AES_VI))
+    #             return aes_decrypt(AES_KEY, object.__getattribute__(self, attr).strip("b'").encode(), AES_VI)
+    #         else:
+    #             return object.__getattribute__(self, attr)
+    #     except Exception as e:
+    #         pass
+
+    def save(self, *args, **kwargs):
+        for attr in self.encrypt_items:
+            print('unencode:', object.__getattribute__(self, attr))
+            print('encode:', aes_encrypt(AES_KEY, object.__getattribute__(self, attr), AES_VI))
+            self.__setattr__(attr, aes_encrypt(AES_KEY, object.__getattribute__(self, attr), AES_VI))
+        super(City, self).save(*args, **kwargs)
+
+

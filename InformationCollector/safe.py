@@ -8,11 +8,11 @@ import datetime
 def new_key():
     pub_key, pri_key = rsa.newkeys(1024)
     pub = pub_key.save_pkcs1()
-    with open('config/pub.pem', 'wb') as f:
+    with open('pub.pem', 'wb') as f:
         f.write(pub)
 
     pri = pri_key.save_pkcs1()
-    with open('config/pri.pem', 'wb') as f:
+    with open('pri.pem', 'wb') as f:
         f.write(pri)
 
 
@@ -46,6 +46,13 @@ def create_new_encrypt_file(json_path):
     msg = encrypt(msg, pub_key)
     with open('config/msg.txt', 'wb') as f:
         f.write(msg)
+
+
+ROT13 = str.maketrans("ABCDEFGHIJKLMabcdefghijklmNOPQRSTUVWXYZnopqrstuvwxyz", "NOPQRSTUVWXYZnopqrstuvwxyzABCDEFGHIJKLMabcdefghijklm")
+
+
+def r_encode(text):
+    return str.translate(text, ROT13)
 
 
 def new_aes_key():
@@ -100,6 +107,7 @@ def create_usage(key, text, vi):
 
 if __name__ == '__main__':
     # new_key()
-    key, vi = new_aes_key()
+    # key, vi = new_aes_key()
     # create_new_encrypt_file('JSONData.json')
-    create_usage(key, key, vi)
+    # create_usage(key, key, vi)
+    pass
