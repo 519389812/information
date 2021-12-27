@@ -6,7 +6,7 @@ class CustomUser(AbstractUser):
     full_name = models.CharField(max_length=300, null=True, blank=True, verbose_name='全名')
 
     def __str__(self):
-        return self.full_name
+        return self.username
 
     def save(self, *args, **kwargs):
         self.full_name = '%s%s' % (self.last_name, self.first_name)
@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = '用户'
         verbose_name_plural = '用户'
-        ordering = ['full_name']
+        ordering = ['username']
 
 
 class Verifier(models.Model):
@@ -24,7 +24,7 @@ class Verifier(models.Model):
     code = models.CharField(max_length=30, verbose_name='验证码')
 
     def __str__(self):
-        return self.user.full_name
+        return self.user.username
 
     class Meta:
         verbose_name = '验证码设置'

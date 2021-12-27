@@ -1,3 +1,4 @@
+import base64
 import json
 import rsa
 import os
@@ -80,7 +81,7 @@ def aes_encrypt(key, text, iv):
     text = add_16(text)
     mode = AES.MODE_CBC
     aes = AES.new(key, mode, iv)
-    encrypt_text = aes.encrypt(text)
+    encrypt_text = base64.b64encode(aes.encrypt(text)).decode()
     return encrypt_text
 
 
@@ -91,7 +92,7 @@ def aes_decrypt(key, text, iv):
         iv = iv.encode()
     mode = AES.MODE_CBC
     aes = AES.new(key, mode, iv)
-    decrypt_text = aes.decrypt(text)
+    decrypt_text = aes.decrypt(base64.b64decode(text.encode()))
     decrypt_text = decrypt_text.strip(b"\x00")
     decrypt_text = decrypt_text.decode()
     return decrypt_text

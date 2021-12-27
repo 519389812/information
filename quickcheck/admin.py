@@ -13,6 +13,7 @@ class CityAdmin(admin.ModelAdmin):
     readonly_fields = ('update_user', )
     filter = ('update_datetime', )
     ordering = ('province', )
+    exclude = ('summary_enc', 'policy_enc')
 
     # 必须要写入readonly_fields，否则报错
     # def basic_score(self, obj):
@@ -29,7 +30,7 @@ class CityAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if form.is_valid():
             obj.update_user = request.user
-            super().save_model(request, obj, form, change)
+            super(CityAdmin, self).save_model(request, obj, form, change)
 
 
 admin.site.register(Province, ProvinceAdmin)
