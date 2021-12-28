@@ -62,7 +62,7 @@ class DecryptedString(str):
 
 class Province(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=300, verbose_name='省份')
+    name = models.CharField(max_length=300, unique=True, verbose_name='省份')
 
     class Meta:
         verbose_name = '省份'
@@ -75,7 +75,7 @@ class Province(models.Model):
 class City(models.Model):
     id = models.AutoField(primary_key=True)
     province = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='city_province', verbose_name='省份')
-    name = models.CharField(max_length=300, verbose_name='城市')
+    name = models.CharField(max_length=300, unique=True, verbose_name='城市')
     summary = CustomEncryptField(max_length=1000, verbose_name='概览')
     policy = CustomEncryptField(max_length=10000, verbose_name='详细政策')
     image = models.ImageField(blank=True, upload_to='quickcheck', verbose_name='图片')

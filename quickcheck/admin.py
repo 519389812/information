@@ -1,7 +1,7 @@
 from django.contrib import admin
 from quickcheck.models import Province, City
-from InformationCollector.safe import aes_encrypt, aes_decrypt
-from InformationCollector.settings import AES_KEY, AES_IV
+import os
+
 
 # 一种解决TextField中显示解密后值的方案，不够灵活
 #
@@ -46,7 +46,6 @@ class CityAdmin(admin.ModelAdmin):
     #     return obj.reward.score
     # basic_score.short_description = '基础分数'
 
-
     def get_form(self, request, obj=None, **kwargs):
         help_texts = {
             'policy': '请按以下格式输入：<br/>*标题1<br/>-正文1...<br/>-正文2...<br/>*标题2<br/>...',
@@ -57,8 +56,9 @@ class CityAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         if form.is_valid():
             obj.update_user = request.user
-            # obj.summary = aes_encrypt(AES_KEY, obj.summary, AES_IV)
-            # obj.policy = aes_encrypt(AES_KEY, obj.policy, AES_IV)
+            if obj.image:
+                base, ext = os.path.splitext(obj.image.name)
+                obj.image.name = obj.province.name + '_' + obj.name + ext
             super(CityAdmin, self).save_model(request, obj, form, change)
 
 
