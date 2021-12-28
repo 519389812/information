@@ -4,39 +4,52 @@ from InformationCollector.safe import aes_encrypt, aes_decrypt
 from InformationCollector.settings import AES_KEY, AES_IV
 
 
+# 第二种解决储存加密读取解密的方法，自定义field
 class CustomEncryptField(models.TextField):
     def __init__(self, *args, **kwargs):
         super(CustomEncryptField, self).__init__(*args, **kwargs)
 
+    # 从数据库读取时的处理
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return value
+        if value == '':
+            return value
+        return decrypt_if_not_decrypted(value)
+
+    # 写入数据库时处理
     def to_python(self, value):
         if value is None:
             return value
-        print('to', value)
+        if value == '':
+            return value
         return encrypt_if_not_encrypted(value)
 
+    # 暂不知何时调用，可以注释；似乎是在储存数据前的二次处理。
     def get_prep_value(self, value):
         if value is None:
             return value
-        print('get', value)
-        return decrypt_if_not_decrypted(value)
+        if isinstance(value, EncryptedString):
+            return value
+        if isinstance(value, DecryptedString):
+            return encrypt_if_not_encrypted(value)
+        return value
 
 
 def encrypt_if_not_encrypted(value):
-    print(value, type(value))
     if isinstance(value, EncryptedString):
         return value
     else:
-        encrypted = aes_encrypt(AES_KEY, value, AES_IV)
-        return EncryptedString(encrypted)
+        value = aes_encrypt(AES_KEY, value, AES_IV)
+        return EncryptedString(value)
 
 
 def decrypt_if_not_decrypted(value):
-    print(value, type(value))
     if isinstance(value, DecryptedString):
         return value
     else:
-        encrypted = aes_decrypt(AES_KEY, value, AES_IV)
-        return DecryptedString(encrypted)
+        value = aes_decrypt(AES_KEY, value, AES_IV)
+        return DecryptedString(value)
 
 
 class EncryptedString(str):

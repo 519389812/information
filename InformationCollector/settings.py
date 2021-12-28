@@ -27,7 +27,7 @@ AES_IV = '0x1.87159274c276'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-online = False
+online = True
 # SECURITY WARNING: don't run with debug turned on in production!
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

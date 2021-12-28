@@ -25,7 +25,7 @@ from . import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', m_view.home, name="home"),
+    path('base', m_view.home, name="home"),
 
     path('login/', u_view.login, name="login"),
     path('logout/', u_view.logout, name="logout"),

@@ -7,8 +7,9 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="passenger" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">行程登记</a>
+                    <a class="nav-link dropdown-toggle" id="passenger" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">功能模块</a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="passenger">
+                        <li><a class="dropdown-item" href="{% url 'quickcheck' %}">行程速查</a></li>
                         <li><a class="dropdown-item" href="{% url 'collect_pax' %}">行程登记</a></li>
                         <li><a class="dropdown-item" href="{% url 'export_pax' %}">模板生成</a></li>
                     </ul>
