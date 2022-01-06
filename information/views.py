@@ -73,7 +73,7 @@ def collect_pax(request):
         body_temperature = request.POST.get('bodyTemperature')
         healthy_code = request.POST.get('healthyCode')
         address = request.POST.get('address').upper()
-        response = redirect('collect_pax')
+        response = render(request, 'pax.html', {'msg_cn': '请按要求完善信息', 'msg_en': 'Please complete the form as required'})
         if not check_valudate(request, check_fullname_validate, check_flight_validate, check_flight_date_validate,
                               check_departure_validate, check_arrival_validate, check_seat_validate,
                               check_baggage_validate, check_id_type_validate, check_id_number_validate,
@@ -91,8 +91,7 @@ def collect_pax(request):
                                         'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
             for n, c in cookie_dict.items():
                 response.set_cookie(n, c, 3600)
-            return render(request, 'pax.html', {'msg_cn': '请按要求完善信息',
-                                                'msg_en': 'Please complete the form as required'})
+            return response
         code = request.POST.get('code')
         flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
         verifier = Verifier.objects.filter(code=code)
