@@ -73,7 +73,7 @@ def collect_pax(request):
         body_temperature = request.POST.get('bodyTemperature')
         healthy_code = request.POST.get('healthyCode')
         address = request.POST.get('address').upper()
-        response = render(request, 'pax.html', {'msg_cn': '请按要求完善信息', 'msg_en': 'Please complete the form as required'})
+        response = redirect(reverse('collect_pax', kwargs={'msg_cn': '请按要求完善信息', 'msg_en': 'Please complete the form as required'}))
         if not check_valudate(request, check_fullname_validate, check_flight_validate, check_flight_date_validate,
                               check_departure_validate, check_arrival_validate, check_seat_validate,
                               check_baggage_validate, check_id_type_validate, check_id_number_validate,
