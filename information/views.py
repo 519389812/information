@@ -7,7 +7,7 @@ from user.models import Verifier
 from user.views import check_authority
 import datetime
 import json
-from django.utils.http import urlquote
+from django.utils.http import urlquote  # 传输中文到前端
 
 
 def show_done(request):
