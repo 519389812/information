@@ -73,7 +73,7 @@ def collect_pax(request):
         body_temperature = request.POST.get('bodyTemperature')
         healthy_code = request.POST.get('healthyCode')
         address = request.POST.get('address').upper()
-        response = redirect(reverse('collect_pax', kwargs={'msg_cn': '请按要求完善信息', 'msg_en': 'Please complete the form as required'}))
+        response = render(request, 'pax.html', {'msg_cn': '请按要求完善信息', 'msg_en': 'Please complete the form as required'})
         if not check_valudate(request, check_fullname_validate, check_flight_validate, check_flight_date_validate,
                               check_departure_validate, check_arrival_validate, check_seat_validate,
                               check_baggage_validate, check_id_type_validate, check_id_number_validate,
@@ -81,7 +81,7 @@ def collect_pax(request):
                               check_inbound_flight_validate, check_inbound_date_validate, check_quarantine_end_validate,
                               check_body_temperature_validate, check_healthy_code_validate, check_address_validate,
                               check_code_validate):
-            cookie_dict = {n: c
+            cookie_dict = {n: json.dumps(c)
                            for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
                                         'departure': departure, 'arrival': arrival, 'id_type': id_type,
                                         'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
@@ -89,8 +89,11 @@ def collect_pax(request):
                                         'inbound_date': inbound_date, 'quarantine_end': quarantine_end,
                                         'body_temperature': body_temperature, 'healthy_code': healthy_code,
                                         'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
-            for n, c in cookie_dict.items():
-                response.set_cookie(n, c, 3600)
+            try:
+                for n, c in cookie_dict.items():
+                    response.set_cookie(n, c, 3600)
+            except:
+                pass
             return response
         code = request.POST.get('code')
         flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
