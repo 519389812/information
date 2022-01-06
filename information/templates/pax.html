@@ -726,12 +726,21 @@ $(document).ready(function(){
         });
     });
 
-
-    var ck = {{ request.COOKIES | safe }};
+    function cookieToJson() {
+        let cookieArr = document.cookie.split("; ");
+        let obj = {}
+        cookieArr.forEach((i) => {
+            let arr = i.split("=");
+            obj[arr[0]] = arr[1];
+        });
+        return obj
+    }
+    // {{ request.COOKIES | safe }}
+    var ck = cookieToJson();
     for (var k in ck)
     {
         if (k != 'csrftoken') {
-            var v = JSON.parse(ck[k]);
+            var v = decodeURI(ck[k]);
             var n = "#" + k.replace(/\_(\w)/g, function(x){return x.slice(1).toUpperCase();});
             if (k == 'address') {
                 $(n).html(v);

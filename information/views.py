@@ -7,6 +7,7 @@ from user.models import Verifier
 from user.views import check_authority
 import datetime
 import json
+from django.utils.http import urlquote
 
 
 def show_done(request):
@@ -34,11 +35,14 @@ def save_pax(request):
         healthy_code = request.POST.get('healthyCode')
         address = request.POST.get('address').upper()
         # code = request.POST.get('code')
-        # flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
+        flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
         # verifier = Verifier.objects.filter(code=code)
         response = redirect('collect_pax')
         try:
-            cookie_dict = {n: json.dumps(c)
+            for n in request.COOKIES.keys():
+                if n != 'csrftoken':
+                    response.delete_cookie(n)
+            cookie_dict = {n: c
                            for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
                                         'departure': departure, 'arrival': arrival, 'id_type': id_type,
                                         'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
@@ -47,7 +51,7 @@ def save_pax(request):
                                         'body_temperature': body_temperature, 'healthy_code': healthy_code,
                                         'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
             for n, c in cookie_dict.items():
-                response.set_cookie(n, c, 3600)
+                response.set_cookie(n, urlquote(c), 3600)
         except:
             pass
         return response
@@ -81,7 +85,7 @@ def collect_pax(request):
                               check_inbound_flight_validate, check_inbound_date_validate, check_quarantine_end_validate,
                               check_body_temperature_validate, check_healthy_code_validate, check_address_validate,
                               check_code_validate):
-            cookie_dict = {n: json.dumps(c)
+            cookie_dict = {n: c
                            for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
                                         'departure': departure, 'arrival': arrival, 'id_type': id_type,
                                         'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
@@ -89,9 +93,12 @@ def collect_pax(request):
                                         'inbound_date': inbound_date, 'quarantine_end': quarantine_end,
                                         'body_temperature': body_temperature, 'healthy_code': healthy_code,
                                         'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
+            for n in request.COOKIES.keys():
+                if n != 'csrftoken':
+                    response.delete_cookie(n)
             try:
                 for n, c in cookie_dict.items():
-                    response.set_cookie(n, c, 3600)
+                    response.set_cookie(n, urlquote(c), 3600)
             except:
                 pass
             return response
@@ -113,7 +120,8 @@ def collect_pax(request):
                                  healthy_code=healthy_code, address=address, verifier=verifier[0])
         response = render(request, 'done.html', {'msg_cn': '提交成功，感谢', 'msg_en': 'Submission successful, thank you'})
         for n in request.COOKIES.keys():
-            response.delete_cookie(n)
+            if n != 'csrftoken':
+                response.delete_cookie(n)
         return response
         # except:
         #     return render(request, 'done.html', {'msg_cn': '提交失败，请联系工作人员',
