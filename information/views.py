@@ -35,7 +35,7 @@ def save_pax(request):
         healthy_code = request.POST.get('healthyCode')
         address = request.POST.get('address').upper()
         # code = request.POST.get('code')
-        flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
+        # flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
         # verifier = Verifier.objects.filter(code=code)
         response = redirect('collect_pax')
         try:
@@ -106,8 +106,24 @@ def collect_pax(request):
         flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
         verifier = Verifier.objects.filter(code=code)
         if verifier.count() == 0:
-            return render(request, 'done.html', {'msg_cn': '验证码错误',
-                                                 'msg_en': 'Incorrect verification code'})
+            response = render(request, 'done.html', {'msg_cn': '验证码错误', 'msg_en': 'Incorrect verification code'})
+            cookie_dict = {n: c
+                           for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
+                                        'departure': departure, 'arrival': arrival, 'id_type': id_type,
+                                        'id_number': id_number, 'dialling_code': dialling_code, 'telephone': telephone,
+                                        'inbound_country': inbound_country, 'inbound_flight': inbound_flight,
+                                        'inbound_date': inbound_date, 'quarantine_end': quarantine_end,
+                                        'body_temperature': body_temperature, 'healthy_code': healthy_code,
+                                        'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
+            for n in request.COOKIES.keys():
+                if n != 'csrftoken':
+                    response.delete_cookie(n)
+            try:
+                for n, c in cookie_dict.items():
+                    response.set_cookie(n, urlquote(c), 3600)
+            except:
+                pass
+            return response
         if Passenger.objects.filter(flight=flight, flight_date=flight_date, id_number=id_number).count() > 0:
             return render(request, 'done.html', {'msg_cn': '您已经提交成功，请勿重复提交',
                                                  'msg_en': 'You have submitted successfully, Duplicate submissions are not allowed!'})
