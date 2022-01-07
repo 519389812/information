@@ -181,6 +181,7 @@ def show_flight_list(request):
         time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         flight_date = request.POST.get('flightDate')
         flight_list = list(set(list(Passenger.objects.filter(flight_date=flight_date).values_list('flight', flat=True))))
+        flight_list.sort()
         text = '({}) {} 数量:{}'.format(time, flight_date, len(flight_list))
         flight_list.insert(0, text)
         return JsonResponse(flight_list, safe=False)
