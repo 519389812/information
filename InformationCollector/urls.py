@@ -58,6 +58,9 @@ urlpatterns = [
     # done
     path('done/', i_view.show_done, name='show_done'),
 
+    # done
+    path('error/', i_view.show_error, name='show_error'),
+
     # quickcheck
     path('quickcheck/', q_view.quickcheck, name='quickcheck'),
 

@@ -11,7 +11,11 @@ from django.utils.http import urlquote  # 传输中文到前端
 
 
 def show_done(request):
-    return render(request, 'done.html', {'msg_cn': '验证码错误', 'msg_en': 'Incorrect verification code'})
+    return render(request, 'done.html', {'msg_cn': '提交成功，感谢', 'msg_en': 'Submission successful, thank you'})
+
+
+def show_error(request):
+    return render(request, 'error.html', {'msg_cn': '验证码错误', 'msg_en': 'Incorrect verification code'})
 
 
 def save_pax(request):
@@ -51,7 +55,7 @@ def save_pax(request):
                                         'body_temperature': body_temperature, 'healthy_code': healthy_code,
                                         'address': address, 'seat': seat, 'baggage': baggage}.items() if c != ''}
             for n, c in cookie_dict.items():
-                response.set_cookie(n, urlquote(c), 3600)
+                response.set_cookie(n, urlquote(c), 7200)
         except:
             pass
         return response
@@ -77,14 +81,15 @@ def collect_pax(request):
         body_temperature = request.POST.get('bodyTemperature')
         healthy_code = request.POST.get('healthyCode')
         address = request.POST.get('address').upper()
-        response = render(request, 'pax.html', {'msg_cn': '请按要求完善信息', 'msg_en': 'Please complete the form as required'})
-        if not check_valudate(request, check_fullname_validate, check_flight_validate, check_flight_date_validate,
+        valid, invalid_list = check_valudate(request, check_fullname_validate, check_flight_validate, check_flight_date_validate,
                               check_departure_validate, check_arrival_validate, check_seat_validate,
                               check_baggage_validate, check_id_type_validate, check_id_number_validate,
                               check_dialling_code_validate, check_telephone_validate, check_inbound_country_validate,
                               check_inbound_flight_validate, check_inbound_date_validate, check_quarantine_end_validate,
-                              check_body_temperature_validate, check_healthy_code_validate, check_address_validate,
-                              check_code_validate):
+                              check_body_temperature_validate, check_healthy_code_validate)
+        if not valid:
+            response = render(request, 'pax.html',
+                              {'msg_cn': '请按要求完善信息', 'msg_en': 'Please complete the form as required', 'invalid_list': invalid_list})
             cookie_dict = {n: c
                            for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
                                         'departure': departure, 'arrival': arrival, 'id_type': id_type,
@@ -98,7 +103,7 @@ def collect_pax(request):
                     response.delete_cookie(n)
             try:
                 for n, c in cookie_dict.items():
-                    response.set_cookie(n, urlquote(c), 3600)
+                    response.set_cookie(n, urlquote(c), 7200)
             except:
                 pass
             return response
@@ -106,7 +111,7 @@ def collect_pax(request):
         flight = flight if len(flight) == 6 else flight[:2] + '0' + flight[2:]
         verifier = Verifier.objects.filter(code=code)
         if verifier.count() == 0:
-            response = render(request, 'done.html', {'msg_cn': '验证码错误', 'msg_en': 'Incorrect verification code'})
+            response = render(request, 'error.html', {'msg_cn': '验证码错误', 'msg_en': 'Incorrect verification code'})
             cookie_dict = {n: c
                            for n, c in {'fullname': fullname, 'flight': flight, 'flight_date': flight_date,
                                         'departure': departure, 'arrival': arrival, 'id_type': id_type,
@@ -125,7 +130,7 @@ def collect_pax(request):
                 pass
             return response
         if Passenger.objects.filter(flight=flight, flight_date=flight_date, id_number=id_number).count() > 0:
-            return render(request, 'done.html', {'msg_cn': '您已经提交成功，请勿重复提交',
+            return render(request, 'error.html', {'msg_cn': '您已经提交成功，请勿重复提交',
                                                  'msg_en': 'You have submitted successfully, Duplicate submissions are not allowed!'})
         # try:
         Passenger.objects.create(fullname=fullname, flight=flight, flight_date=flight_date, departure_city=departure,
@@ -451,8 +456,12 @@ def check_code_validate(request):
 
 
 def check_valudate(request, *args):
+    invalid_list = []
     check_method = args
     for method in check_method:
         if method(request).content != b'':
-            return False
-    return True
+            invalid_list.append(method(request).content.decode())
+    if len(invalid_list) != 0:
+        return False, invalid_list
+    return True, invalid_list
+
