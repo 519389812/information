@@ -5,11 +5,14 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import login as login_admin
 from django.contrib.auth import logout as logout_admin
 from django.contrib.auth import authenticate
+from django.http import JsonResponse
 
 
 def check_authority(func):
     def wrapper(*args, **kwargs):
         if not args[0].user.is_authenticated:
+            if "X-Requested_With" in args[0].headers:
+                return JsonResponse('请先登录', safe=False)
             return redirect('/login/?next=%s' % args[0].path)
         return func(*args, **kwargs)
     return wrapper

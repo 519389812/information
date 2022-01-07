@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, reverse, redirect
 from django.utils.datastructures import MultiValueDictKeyError
 import re
@@ -160,7 +160,7 @@ def export_pax(request):
         pax = Passenger.objects.filter(flight=flight, flight_date=flight_date)
         time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if pax.count() == 0:
-            return HttpResponse('({}) {} {}\n无数据'.format(time, flight, flight_date))
+            return JsonResponse('({}) {} {}\n无数据'.format(time, flight, flight_date), safe=False)
         pax = pax.values()
         text = '({}) {} {} 共{}条数据\n'.format(time, flight, flight_date, pax.count())
         for i, v in enumerate(pax):
@@ -170,7 +170,20 @@ def export_pax(request):
                 v['inbound_flight'], v['inbound_date'], v['quarantine_end'], v['body_temperature'], v['healthy_code'],
                 v['address']
             )
-        return HttpResponse(text)
+        return JsonResponse(text, safe=False)
+    else:
+        return render(request, 'export_pax.html')
+
+
+@check_authority
+def show_flight_list(request):
+    if request.method == 'POST':
+        time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        flight_date = request.POST.get('flightDate')
+        flight_list = list(set(list(Passenger.objects.filter(flight_date=flight_date).values_list('flight', flat=True))))
+        text = '({}) {} 数量:{}'.format(time, flight_date, len(flight_list))
+        flight_list.insert(0, text)
+        return JsonResponse(flight_list, safe=False)
     else:
         return render(request, 'export_pax.html')
 

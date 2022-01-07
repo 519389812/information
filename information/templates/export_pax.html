@@ -54,6 +54,9 @@
                                                 <br />
                                                 请务必于每日工作结束后清除当天数据
                                             </p>
+                                            <button class="btn btn-primary btn-md" id="show_flight_list_btn">查询登记航班列表</button>
+                                            <br/><br/>
+                                            <div id="flight_list_result"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -145,13 +148,9 @@
                             'flightDate':flightDate,
                             'csrfmiddlewaretoken':$("[name='csrfmiddlewaretoken']").val()
                         },
-                        dataType: "text",
+                        dataType: "JSON",
                         success: function(data){
-                            if (data.startsWith('<!') == true) {
-                                $("#message").val('请先登录');
-                            } else {
-                                $("#message").val(data);
-                            }
+                            $("#message").val(data);
                             $("#generate_btn").removeAttr("disabled");
                             $("#generate_btn").html('生成数据');
                         },
@@ -163,6 +162,63 @@
                             } else if(status == 'error') {
                                 $("#message").val('模板生成出错');
                                 $("#generate_btn").html('生成数据');
+                                $("#generate_btn").removeAttr("disabled");
+                            } else if(status == 'success') {
+                                return;
+                            }
+                        },
+                    });
+                };
+            });
+
+            $('#show_flight_list_btn').click(function(){
+                var flightDate_validate = $('#flightDate-invalid-feedback').text();
+                var flightDate = $('#flightDate').val();
+                if (flightDate == "") {
+                    alert("请先完善填写内容 Please fill out the form as required");
+                    return;
+                };
+                if (flightDate_validate != ""){
+                    alert("请先完善填写内容 Please fill out the form as required");
+                    return;
+                } else {
+                    var flightListDiv = $('#flight_list_result'); //找到一个DOM节点
+                    flightListDiv.empty();
+                    $("#flight_list_result").html('查询中...');
+                    $("#show_flight_list_btn").attr("disabled", "true");
+                    $.ajax({
+                        type: "POST",
+                        url: "/show_flight_list/",
+                        async : false,
+                        timeout: 5000,
+                        data: {
+                            'flightDate':flightDate,
+                            'csrfmiddlewaretoken':$("[name='csrfmiddlewaretoken']").val()
+                        },
+                        dataType: "JSON",
+                        success: function(data){
+                            if (data == '请先登录') {
+                                $("#flight_list_result").html(data);
+                            } else if (data.length == 0) {
+                                $("#flight_list_result").html('无数据');
+                            } else {
+                                var content = "";
+                                content += '<ul class="list-unstyled mb-4">'
+                                for (var i = 0; i <= data.length - 1; i++) {
+                                    content += '<li class="mb-2"><i class="bi bi-check text-primary"></i>' + data[i] + '</li>'
+                                }
+                                content += '</ul>'
+                                flightListDiv.empty();
+                                flightListDiv.append(content);
+                            }
+                            $("#show_flight_list_btn").removeAttr("disabled");
+                        },
+                        complete : function(XMLHttpRequest,status) { //请求完成后最终执行参数
+                            if(status == 'timeout') { //超时,status还有success,error等值的情况
+                                $("#flight_list_result").html('查询超时');
+                                $("#generate_btn").removeAttr("disabled");
+                            } else if(status == 'error') {
+                                $("#flight_list_result").html('查询出错');
                                 $("#generate_btn").removeAttr("disabled");
                             } else if(status == 'success') {
                                 return;
