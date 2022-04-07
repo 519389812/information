@@ -189,6 +189,14 @@ def show_flight_list(request):
         return render(request, 'export_pax.html')
 
 
+def upload_passenger_list(request):
+    if request.method == 'POST':
+        passenger_list = request.FILES.get('upload_passenger_list')
+
+    else:
+        return render(request, 'error_403.html', status=403)
+
+
 def check_fullname_validate(request):
     if request.method == 'GET':
         fullname = request.GET.get('fullname')

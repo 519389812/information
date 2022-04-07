@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('login/', u_view.login, name='login'),
     path('logout/', u_view.logout, name='logout'),
+
     path('pax/', i_view.collect_pax, name='collect_pax'),
     path('export_pax/', i_view.export_pax, name='export_pax'),
     path('show_flight_list/', i_view.show_flight_list, name='show_flight_list'),
@@ -58,5 +59,8 @@ urlpatterns = [
 
     # done
     path('error/', i_view.show_error, name='show_error'),
+
+    # passenger list
+    path('upload_passenger_list/', i_view.upload_passenger_list, name='upload_passenger_list'),
 
 ]

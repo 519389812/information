@@ -1,0 +1,13 @@
+{% extends 'admin/change_list.html' %}
+{% load static %}
+
+{% block pagination %}
+    <hr><br>
+    <div>
+        <form name="uploadPassengerListForm" id="uploadPassengerListForm" action="{% url 'upload_passenger_list' %}" method="post" enctype="multipart/form-data">
+            <input type="file" name="upload_passenger_list" id="upload_passenger_list" required/>
+            <button class="btn btn-primary btn-lg" id="submitButton" type="submit">上传旅客列表</button>
+        </form>
+    </div>
+    <hr><br>
+{% endblock %}

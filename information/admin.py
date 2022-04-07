@@ -8,7 +8,15 @@ class PassengerAdmin(admin.ModelAdmin):
                     'inbound_flight', 'inbound_date', 'quarantine_end', 'body_temperature', 'healthy_code',
                     'address', 'verifier')
     search_fields = ('flight',)
-    filter = ('flight_date', )
+    filter = ('flight_date',)
+
+
+class PassengerListAdmin(admin.ModelAdmin):
+    change_list_template = "admin/man_hour_summary_change_list.html"
+
+    list_display = ('id', 'file_name', 'success', 'failure', 'upload_datetime')
+    search_fields = ('file_name',)
+    filter = ('upload_datetime',)
 
 
 admin.site.register(Passenger, PassengerAdmin)

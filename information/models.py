@@ -30,3 +30,18 @@ class Passenger(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+class PassengerList(models.Model):
+    id = models.AutoField(primary_key=True)
+    file_name = models.TextField(max_length=1000, blank=True, verbose_name='上传文件名')
+    success = models.IntegerField(verbose_name='成功数')
+    failure = models.IntegerField(verbose_name='失败数')
+    upload_datetime = models.DateTimeField(auto_now_add=True, verbose_name='上传时间')
+
+    class Meta:
+        verbose_name = 'pax信息'
+        verbose_name_plural = 'pax信息'
+
+    def __str__(self):
+        return self.file_name
