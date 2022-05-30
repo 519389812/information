@@ -144,7 +144,6 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static', 'InformationCollector'),
-    # os.path.join(BASE_DIR, 'information', 'static', 'information'),
 ]
 
 AUTH_USER_MODEL = 'user.CustomUser'
