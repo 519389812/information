@@ -66,5 +66,5 @@ urlpatterns = [
     path('upload_passenger_list/', i_view.upload_passenger_list, name='upload_passenger_list'),
 
     # static
-    re_path('(?P<path>tencent1533057592315403057.txt)/$', serve, {'document_root': MEDIA_ROOT}),
+    re_path('(?P<path>tencent15330575923154030577.txt)/$', serve, {'document_root': MEDIA_ROOT}),
 ]
