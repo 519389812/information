@@ -164,7 +164,7 @@ def export_pax(request):
         pax = pax.values()
         text = '({}) {} {} 共{}条数据\n'.format(time, flight, flight_date, pax.count())
         for i, v in enumerate(pax):
-            text += """序号:{}\n姓名:{}\n航班号:{}\n起飞时间:{}\n起飞地:{}\n目的地:{}\n座位号:{}\n托运行李件数:{}\n证件类别:{}\n证件号:{}\n联系电话区号:{}\n联系电话:{}\n入境地区:{}\n入境航班号:{}\n入境时间:{}\n解除隔离时间:{}\n体温状态:{}\n健康码:{}\n目的地详细地址:{}\n\n\n""".format(
+            text += """序号:{}\n姓名:{}\n航班号:{}\n起飞时间:{}\n起飞地:{}\n目的地:{}\n座位号:{}\n托运行李件数:{}\n证件类别:{}\n证件号:{}\n联系电话区号:{}\n联系电话:{}\n始发国家/地区:{}\n入境航班号:{}\n入境时间:{}\n解除隔离时间:{}\n体温状态:{}\n健康码:{}\n目的地详细地址:{}\n\n\n""".format(
                 i+1, v['fullname'], v['flight'], v['flight_date'], v['departure_city'], v['arrival_city'], v['seat'],
                 v['baggage'], v['id_type'], v['id_number'], v['dialling_code'], v['telephone'], v['inbound_country'],
                 v['inbound_flight'], v['inbound_date'], v['quarantine_end'], v['body_temperature'], v['healthy_code'],
@@ -363,11 +363,11 @@ def check_inbound_country_validate(request):
     else:
         inbound_country = request.POST.get('inboundCountry')
     if inbound_country == '':
-        return HttpResponse('入境地区不能为空 An inbound region is required')
+        return HttpResponse('始发国家/地区不能为空 An inbound region is required')
     if len(inbound_country) < 2 or len(inbound_country) > 30:
-        return HttpResponse('入境地区格式不正确 Inbound region is not valid')
+        return HttpResponse('始发国家/地区格式不正确 Inbound region is not valid')
     if not re.search(r'^[a-zA-Z0-9\x20\u4e00-\u9fa5]+$', inbound_country):
-        return HttpResponse('入境地区格式不正确 Inbound region is not valid')
+        return HttpResponse('始发国家/地区格式不正确 Inbound region is not valid')
     return HttpResponse('')
 
 
